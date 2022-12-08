@@ -1,0 +1,36 @@
+﻿// See https://aka.ms/new-console-template for more information
+Console.WriteLine("Day 3, part 1!");
+
+var sum = 0;
+
+
+int getValue(char a) {
+    if(a > 'Z') {
+        return ((int)a) - 96;
+    }
+    else {
+        return ((int)a) - 38; 
+    }
+}
+
+
+
+foreach (string line in System.IO.File.ReadLines(@"input.txt"))
+{
+    var firstHalf = line.Substring(0, line.Length/2);
+    var secondHalf = line.Substring(line.Length/2);
+
+    char inBoth = '0';
+    foreach(var c in firstHalf.ToCharArray()) {
+        if(secondHalf.IndexOf(c) != -1) {
+            inBoth = c;
+            break;
+        }
+    }
+
+    if(inBoth == '0') throw new Exception();
+
+    sum += getValue(inBoth);
+
+    Console.WriteLine($"First: {firstHalf} Second: {secondHalf} In both: {inBoth} Value: {getValue(inBoth)}  Sum: {sum}");
+}

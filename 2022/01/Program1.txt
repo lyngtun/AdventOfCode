@@ -1,0 +1,25 @@
+﻿// See https://aka.ms/new-console-template for more information
+Console.WriteLine("Hello, World!");
+
+var maxFood = 0;
+var currentFood = 0;
+
+foreach (string line in System.IO.File.ReadLines(@"input1.txt"))
+{  
+    // Console.WriteLine($"Read line: '{currentFood}'");
+    if (String.IsNullOrWhiteSpace(line)) {
+        if (currentFood > maxFood) {
+            maxFood = currentFood;
+            Console.WriteLine($"{currentFood}");
+        }
+        currentFood = 0;
+    }
+    else {
+        var lineFood = Int32.Parse(line);
+        // Console.WriteLine($"Found value: {lineFood}");
+        currentFood += lineFood;
+        // Console.WriteLine($"New total: {currentFood}");
+    }
+}  
+
+Console.WriteLine($"Max food is {maxFood}");

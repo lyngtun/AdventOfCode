@@ -42,30 +42,16 @@ void moveTail(int elements) {
         var hpos = positions[i-1];
         var tpos = positions[i];
 
+        if(!(Math.Abs(hpos.Item1 - tpos.Item1) < 2 && Math.Abs(hpos.Item2 - tpos.Item2) < 2)) {
 
-        if(hpos.Item1 - tpos.Item1 > 1) {
-            tpos.Item1 += 1;
-            if(tpos.Item2 < hpos.Item2) tpos.Item2++;
-            if(tpos.Item2 > hpos.Item2) tpos.Item2--;
-        }
-        if(tpos.Item1 - hpos.Item1 > 1) {
-            tpos.Item1 -= 1;
-            if(tpos.Item2 < hpos.Item2) tpos.Item2++;
-            if(tpos.Item2 > hpos.Item2) tpos.Item2--;
-        }
-        if(hpos.Item2 - tpos.Item2 > 1) {
-            tpos.Item2 += 1;
-            if(tpos.Item1 < hpos.Item1) tpos.Item1++;
-            if(tpos.Item1 > hpos.Item1) tpos.Item1--;
-        }
-        if(tpos.Item2 - hpos.Item2 > 1) {
-            tpos.Item2 -= 1;
-            if(tpos.Item1 < hpos.Item1) tpos.Item1++;
-            if(tpos.Item1 > hpos.Item1) tpos.Item1--;
-        }
+            if(hpos.Item1 > tpos.Item1) tpos.Item1++;
+            if(hpos.Item1 < tpos.Item1) tpos.Item1--;
+            if(hpos.Item2 > tpos.Item2) tpos.Item2++;
+            if(hpos.Item2 < tpos.Item2) tpos.Item2--;
 
-        positions.RemoveAt(i);
-        positions.Insert(i, tpos);
+            positions.RemoveAt(i);
+            positions.Insert(i, tpos);
+        }
     }
 
     var tail = positions.Last();

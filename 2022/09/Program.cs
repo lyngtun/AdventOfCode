@@ -1,14 +1,21 @@
 ﻿
 var lines = System.IO.File.ReadLines(@"input.txt");
 
-var hpos = (0, 0);
-var tpos = (0, 0);
+var elements = 10;
+
+List<(int, int)> positions = new List<(int, int)>();
+for(int i=0; i < elements; i++) {
+    positions.Add((0, 0));
+}
 
 var allTailPositions = new List<(int, int)>();
-allTailPositions.Add(tpos);
+allTailPositions.Add(positions.Last());
 
 void moveHead(string direction, int count) {
+
     for(int i=0; i < count; i++) {
+        var hpos = positions.First();
+    
         switch(direction) {
             case "U": 
                 hpos.Item2 += 1;
@@ -23,31 +30,43 @@ void moveHead(string direction, int count) {
                 hpos.Item1 -= 1;
                 break;
         }
-    
-        moveTail();
+        
+        positions.RemoveAt(0);
+        positions.Insert(0, hpos);
+        moveTail(elements);
     }
 }
 
-void moveTail() {
-    if(hpos.Item1 - tpos.Item1 > 1) {
-        tpos.Item1 += 1;
-        tpos.Item2 = hpos.Item2;
-    }
-    else if(tpos.Item1 - hpos.Item1 > 1) {
-        tpos.Item1 -= 1;
-        tpos.Item2 = hpos.Item2;
-    }
-    else if(hpos.Item2 - tpos.Item2 > 1) {
-        tpos.Item2 += 1;
-        tpos.Item1 = hpos.Item1;
-    }
-    else if(tpos.Item2 - hpos.Item2 > 1) {
-        tpos.Item2 -= 1;
-        tpos.Item1 = hpos.Item1;
+void moveTail(int elements) {
+    for(int i = 1; i < elements; i++) {
+        var hpos = positions[i-1];
+        var tpos = positions[i];
+
+        if(hpos.Item1 - tpos.Item1 > 1) {
+            tpos.Item1 += 1;
+            tpos.Item2 = hpos.Item2;
+        }
+        if(tpos.Item1 - hpos.Item1 > 1) {
+            tpos.Item1 -= 1;
+            tpos.Item2 = hpos.Item2;
+        }
+        if(hpos.Item2 - tpos.Item2 > 1) {
+            tpos.Item2 += 1;
+            tpos.Item1 = hpos.Item1;
+        }
+        if(tpos.Item2 - hpos.Item2 > 1) {
+            tpos.Item2 -= 1;
+            tpos.Item1 = hpos.Item1;
+        }
+
+        positions.RemoveAt(i);
+        positions.Insert(i, tpos);
     }
 
-   if(!allTailPositions.Contains(tpos)) {
-        allTailPositions.Add(tpos);
+    var tail = positions.Last();
+
+    if(!allTailPositions.Contains(tail)) {
+          allTailPositions.Add(tail);
     }
 }
 

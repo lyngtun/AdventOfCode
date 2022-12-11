@@ -2,6 +2,7 @@
 
 
 var monkeys = new List<Monkey>();
+long lcd = 1;
 
 for(int i=0; i<lines.Count(); i++) {
     if(!string.IsNullOrWhiteSpace(lines[i])) {
@@ -11,7 +12,7 @@ for(int i=0; i<lines.Count(); i++) {
         var id = Int32.Parse(idString.Remove(idString.Length -1));
 
         var items = lines[i++].Split(" ");
-        var itemList = new List<int>();
+        var itemList = new List<long>();
         for(var j=4; j<items.Count(); j++) {
             if(items[j].Contains(',')) itemList.Add(Int32.Parse(items[j].Remove(items[j].Length-1)));
             else itemList.Add(Int32.Parse(items[j]));
@@ -29,8 +30,8 @@ for(int i=0; i<lines.Count(); i++) {
     }
 }
 
-int doOperation(string type, string val, int item) {
-    int opval = 0;
+long doOperation(string type, string val, long item) {
+    long opval = 0;
     
     if(val == "old") opval = item;
     else opval = Int32.Parse(val);
@@ -49,7 +50,7 @@ void doMonkeyBusiness(Monkey m) {
     foreach(var item in m.items) {
         m.inspectCount++;
         var worryLevel = doOperation(m.operationType, m.operationVal, item);
-        worryLevel = worryLevel / 3;
+        worryLevel %= lcd;
 
         if(worryLevel % m.testDivisor == 0) monkeys[m.trueMonkey].items.Add(worryLevel);
         else monkeys[m.falseMonkey].items.Add(worryLevel);
@@ -57,14 +58,19 @@ void doMonkeyBusiness(Monkey m) {
     m.items.Clear();
 }
 
-var numRounds = 20;
+var numRounds = 10000;
+
+foreach(var m in monkeys) {
+    lcd *= m.testDivisor;
+}
+
 for(var i=0; i< numRounds; i++) {
     foreach(var monkey in monkeys) {
         doMonkeyBusiness(monkey);
     }
 }
 
-var maxInspect = new List<int>();
+var maxInspect = new List<long>();
 
 foreach(var m in monkeys) {
     Console.WriteLine($"Monkey {m.id} inspected {m.inspectCount} times.");
@@ -80,7 +86,7 @@ Console.WriteLine($"Part 1: {part1}");
 
 public class Monkey {
     public int id;
-    public List<int> items;
+    public List<long> items;
     public string operationType;
     public string operationVal;
     public int testDivisor;
@@ -88,7 +94,7 @@ public class Monkey {
     public int falseMonkey;
     public int inspectCount = 0;
 
-    public Monkey(int id, List<int> items, string operationType, string operationVal, int testDivisor, int trueMonkey, int falseMonkey) {
+    public Monkey(int id, List<long> items, string operationType, string operationVal, int testDivisor, int trueMonkey, int falseMonkey) {
         this.id = id;
         this.items = items;
         this.operationType = operationType;

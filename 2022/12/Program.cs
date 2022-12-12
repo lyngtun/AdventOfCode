@@ -82,7 +82,7 @@ List<(int, int, int)> eliminateHeightDifference(List<(int, int, int)> newLocatio
 
 (int, int, int) findStart(List<(int, int, int)> newLocations) {
     foreach(var newPos in newLocations) {
-        if(myMap[newPos.Item1, newPos.Item2] == 'S') return newPos;
+        if(myMap[newPos.Item1, newPos.Item2] == 'a') return newPos;
     }
 
     return (-1, -1, -1);
@@ -121,6 +121,7 @@ for(var i=0; i<path.Count(); i++) {
     if(start != (-1, -1, -1)) {
         // Found start!
         Console.WriteLine($"Start found at: {start}");
+        break;
     }
 
     path.AddRange(newLocations);

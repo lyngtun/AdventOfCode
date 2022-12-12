@@ -1,5 +1,8 @@
 ﻿var lines = System.IO.File.ReadAllLines("input/input.txt");
+var watch = new System.Diagnostics.Stopwatch();
+var runwatch = new System.Diagnostics.Stopwatch();
 
+watch.Start();
 var xsize = lines[0].Length;
 var ysize = lines.Count();
 
@@ -99,9 +102,11 @@ void printPathMap() {
     }
 }
 
+runwatch.Start();
 // Create list with endpoint, distance 0
 var path = new List<(int, int, int)>();
 path.Add((endPos.Item1, endPos.Item2, 0));
+(int, int, int) start = (-1, -1, -1);
 
 for(var i=0; i<path.Count(); i++) {
     var currentLocation = path[i];
@@ -117,15 +122,21 @@ for(var i=0; i<path.Count(); i++) {
     newLocations = eliminateHeightDifference(newLocations, currentLocation);
 
     // Check for goal
-    var start = findStart(newLocations);
+    start = findStart(newLocations);
     if(start != (-1, -1, -1)) {
-        // Found start!
-        Console.WriteLine($"Start found at: {start}");
         break;
     }
 
     path.AddRange(newLocations);
 }
 
+runwatch.Stop();
+watch.Stop();
+
+// Found start!
+Console.WriteLine($"Start found at: {start}");
 
 Console.WriteLine("Search complete");
+
+Console.WriteLine($"Runtime: {runwatch.ElapsedMilliseconds}");
+Console.WriteLine($"Total runtime, incl loading: {watch.ElapsedMilliseconds}");

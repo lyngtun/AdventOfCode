@@ -66,12 +66,13 @@ List<(int, int, int)> eliminateHeightDifference(List<(int, int, int)> newLocatio
     var okHeight = new List<(int, int, int)>();
     var height = myMap[pos.Item1, pos.Item2];
 
+    if(height == 'S') height = 'a';
     if(height == 'E') height = 'z';
-
     foreach(var newPos in newLocations) {
         var newHeight = myMap[newPos.Item1, newPos.Item2];
         if(newHeight == 'S') newHeight = 'a';
-        if(Math.Abs((int)height - (int)newHeight) <= 1) {
+        if(newHeight == 'E') newHeight = 'z';
+        if((int)height - (int)newHeight < 2) {
             okHeight.Add(newPos);
         }
     }
@@ -104,8 +105,8 @@ path.Add((endPos.Item1, endPos.Item2, 0));
 
 for(var i=0; i<path.Count(); i++) {
     var currentLocation = path[i];
-    pathMap[currentLocation.Item1, currentLocation.Item2] = '#';
-    if(i % 10 == 0) printPathMap();
+    // pathMap[currentLocation.Item1, currentLocation.Item2] = myMap[currentLocation.Item1, currentLocation.Item2];
+    // if(i % 10 == 0) printPathMap();
 
     var newLocations = getAjacent(currentLocation);
 

@@ -51,31 +51,31 @@ string printList(List<PacketData> dataList) {
     return retVal;
 }
 
-int isRightOrder(List<PacketData> left, List<PacketData> right) {
-    Console.WriteLine("Left:  " + printList(left));
-    Console.WriteLine("Right: " + printList(right));
+int comparePacketLists(List<PacketData> left, List<PacketData> right) {
+    // Console.WriteLine("Left:  " + printList(left));
+    // Console.WriteLine("Right: " + printList(right));
     for(var i=0; ; i++) {
         if(left.Count() <= i) {
             // Left ran out of items
-            return (left.Count() < right.Count()) ? 1 : 0;
+            return (left.Count() < right.Count()) ? -1 : 0;
         }
         else if(right.Count() <= i) {
             // Right side ran out of items
-            return (left.Count() > right.Count()) ? -1 : 0;
+            return (left.Count() > right.Count()) ? 1 : 0;
         }
         else if(left[i].listVal == null && right[i].listVal == null) {
             if(left[i].intVal > right[i].intVal) {
                 // Right smaller, not right order
-                return -1;
+                return 1;
             }
             if(left[i].intVal < right[i].intVal) {
                 // Left smaller, right order
-                return 1;
+                return -1;
             }
         }
         else if(left[i].listVal != null && right[i].listVal != null) {
             // Compare new lists
-            var retVal = isRightOrder(left[i].listVal, right[i].listVal);
+            var retVal = comparePacketLists(left[i].listVal, right[i].listVal);
             if(retVal != 0) {
                 return retVal;
             }
@@ -84,7 +84,7 @@ int isRightOrder(List<PacketData> left, List<PacketData> right) {
             // Right is number, convert to list
             var tmpList = new List<PacketData>();
             tmpList.Add(new PacketData(right[i].intVal, null));
-            var retVal = isRightOrder(left[i].listVal, tmpList);
+            var retVal = comparePacketLists(left[i].listVal, tmpList);
             if(retVal != 0) {
                 return retVal;
             }
@@ -93,7 +93,7 @@ int isRightOrder(List<PacketData> left, List<PacketData> right) {
             // Left is number
             var tmpList = new List<PacketData>();
             tmpList.Add(new PacketData(left[i].intVal, null));
-            var retVal = isRightOrder(tmpList, right[i].listVal);
+            var retVal = comparePacketLists(tmpList, right[i].listVal);
             if(retVal != 0) {
                 return retVal;
             }
@@ -116,13 +116,42 @@ var currentSet = 0;
 var okSetSum = 0;
 foreach(var set in packetSets) {
     currentSet++;
-    if(isRightOrder(set.left, set.right) > 0) {
-        Console.WriteLine($"Set {currentSet} in right order.");
+    if(comparePacketLists(set.left, set.right) < 0) {
+        // Console.WriteLine($"Set {currentSet} in right order.");
         okSetSum += currentSet;
     }
 }
 
 Console.WriteLine($"Sum of right order sets: {okSetSum}");
+
+// Add part 2 packets
+var divPack1Item = new PacketData(2, null);
+var divPack1 = new PacketData(0, new List<PacketData> { divPack1Item });
+var divPack1List = new List<PacketData> { divPack1 };
+
+var divPack2Item = new PacketData(6, null);
+var divPack2 = new PacketData(0, new List<PacketData> { divPack2Item });
+var divPack2List = new List<PacketData> { divPack2 };
+
+packetSets.Add(new PacketSet(divPack1List, divPack2List));
+
+var sortedPackets = new List<List<PacketData>>();
+
+foreach(var set in packetSets) {
+    sortedPackets.Add(set.left);
+    sortedPackets.Add(set.right);
+}
+
+sortedPackets.Sort(comparePacketLists);
+foreach(var item in sortedPackets) {
+    Console.WriteLine(printList(item));
+}
+
+var index1 = sortedPackets.IndexOf(divPack1List)+1;
+var index2 = sortedPackets.IndexOf(divPack2List)+1;
+var p = index1*index2;
+
+Console.WriteLine($"1st at {index1} 2nd at {index2}, product: {p}");
 
 public class PacketSet {
     public List<PacketData> left;

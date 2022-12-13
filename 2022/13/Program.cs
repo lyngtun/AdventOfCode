@@ -30,30 +30,7 @@ List<PacketData> readPacketData(string line) {
     return retVal;
 }
 
-string printList(List<PacketData> dataList) {
-    var retVal = "[";
-
-    foreach(var data in dataList) {
-        if(data.listVal == null) {
-            retVal += data.intVal + ",";
-        }
-        else {
-            retVal += printList(data.listVal) + ",";
-        }
-    }
-
-    // Remove last comma
-    if(dataList.Count() > 0) {
-        retVal = retVal.Remove(retVal.Length - 1);
-    }
-
-    retVal += "]";
-    return retVal;
-}
-
 int comparePacketLists(List<PacketData> left, List<PacketData> right) {
-    // Console.WriteLine("Left:  " + printList(left));
-    // Console.WriteLine("Right: " + printList(right));
     for(var i=0; ; i++) {
         if(left.Count() <= i) {
             // Left ran out of items
@@ -117,12 +94,11 @@ var okSetSum = 0;
 foreach(var set in packetSets) {
     currentSet++;
     if(comparePacketLists(set.left, set.right) < 0) {
-        // Console.WriteLine($"Set {currentSet} in right order.");
         okSetSum += currentSet;
     }
 }
 
-Console.WriteLine($"Sum of right order sets: {okSetSum}");
+Console.WriteLine($"Part 1: Sum of right order sets: {okSetSum}");
 
 // Add part 2 packets
 var divPack1Item = new PacketData(2, null);
@@ -143,15 +119,12 @@ foreach(var set in packetSets) {
 }
 
 sortedPackets.Sort(comparePacketLists);
-foreach(var item in sortedPackets) {
-    Console.WriteLine(printList(item));
-}
 
 var index1 = sortedPackets.IndexOf(divPack1List)+1;
 var index2 = sortedPackets.IndexOf(divPack2List)+1;
 var p = index1*index2;
 
-Console.WriteLine($"1st at {index1} 2nd at {index2}, product: {p}");
+Console.WriteLine($"Part 1: 1st divider at {index1} 2nd divider at {index2}, product: {p}");
 
 public class PacketSet {
     public List<PacketData> left;

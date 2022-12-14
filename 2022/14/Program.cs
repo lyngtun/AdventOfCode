@@ -27,10 +27,10 @@ foreach(var line in lines) {
 }
 
 // Make map
-var myMap = new char[xmax+2, ymax+2];
-for(var i=0; i<xmax+2; i++) {
-    for(var j=0; j<ymax+2; j++) {
-        myMap[i, j] = '.';
+var myMap = new char[xmax+1000, ymax+3];
+for(var i=0; i<xmax+1000; i++) {
+    for(var j=0; j<ymax+3; j++) {
+        myMap[i, j] = j<ymax+2 ? '.' : '#';
     }
 }
 
@@ -62,7 +62,8 @@ foreach(var path in paths) {
 // Pour sand
 var stopPour = false;
 var numStoppedSand = 0;
-(int x, int y) sandPosition = (500, 0);
+var startPosition = (500, 0);
+(int x, int y) sandPosition = startPosition;
 
 while(!stopPour) {
     if(myMap[sandPosition.x, sandPosition.y+1] == '.') {
@@ -79,15 +80,16 @@ while(!stopPour) {
     else {
         myMap[sandPosition.x, sandPosition.y] = 'o';
         numStoppedSand++;
-        sandPosition = (500, 0);
-    }
-
-    if(sandPosition.y > ymax) {
-        stopPour = true;
+        if(sandPosition == startPosition) {
+            stopPour = true;
+        }
+        else {
+            sandPosition = startPosition;
+        }
     }
 }
 
-Console.WriteLine($"Part 1 - number of settled sand: {numStoppedSand}");
+Console.WriteLine($"Part 2 - number of settled sand: {numStoppedSand}");
 
 public class Path {
     public List<(int, int)> points = new List<(int, int)>();

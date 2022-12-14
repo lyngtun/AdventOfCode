@@ -39,6 +39,8 @@ void makeMap(int floorlevel) {
 }
 
 void drawRocks((int x, int y) start, (int x, int y) finish) {
+    if(myMap == null) throw new Exception();
+
     if(start.x == finish.x) {
         int sy = start.y < finish.y ? start.y : finish.y;
         int fy = sy == start.y ? finish.y : start.y;

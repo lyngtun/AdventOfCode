@@ -26,12 +26,16 @@ foreach(var line in lines) {
     paths.Add(path);
 }
 
-// Make map
 var myMap = new char[xmax+1000, ymax+3];
-for(var i=0; i<xmax+1000; i++) {
-    for(var j=0; j<ymax+3; j++) {
-        myMap[i, j] = j<ymax+2 ? '.' : '#';
+
+void makeMap(int floorlevel) {
+    for(var i=0; i<xmax+1000; i++) {
+        for(var j=0; j<ymax+3; j++) {
+            myMap[i, j] = j<floorlevel ? '.' : '#';
+        }
     }
+
+    makeRocks();
 }
 
 void drawRocks((int x, int y) start, (int x, int y) finish) {
@@ -53,43 +57,59 @@ void drawRocks((int x, int y) start, (int x, int y) finish) {
     }
 }
 
-foreach(var path in paths) {
-    for(var i=0; i<path.points.Count()-1; i++) {
-        drawRocks(path.points[i], path.points[i+1]);
+void makeRocks() {
+    foreach(var path in paths) {
+        for(var i=0; i<path.points.Count()-1; i++) {
+            drawRocks(path.points[i], path.points[i+1]);
+        }
     }
 }
 
-// Pour sand
-var stopPour = false;
-var numStoppedSand = 0;
-var startPosition = (500, 0);
-(int x, int y) sandPosition = startPosition;
+int pourSand() {
+    var stopPour = false;
+    var numStoppedSand = 0;
+    var startPosition = (500, 0);
+    (int x, int y) sandPosition = startPosition;
 
-while(!stopPour) {
-    if(myMap[sandPosition.x, sandPosition.y+1] == '.') {
-        sandPosition.y++;
-    }
-    else if(myMap[sandPosition.x-1, sandPosition.y+1] == '.') {
-        sandPosition.y++;
-        sandPosition.x--;
-    }
-    else if(myMap[sandPosition.x+1, sandPosition.y+1] == '.') {
-        sandPosition.y++;
-        sandPosition.x++;
-    }
-    else {
-        myMap[sandPosition.x, sandPosition.y] = 'o';
-        numStoppedSand++;
-        if(sandPosition == startPosition) {
-            stopPour = true;
+    while(!stopPour) {
+        if(myMap[sandPosition.x, sandPosition.y+1] == '.') {
+            sandPosition.y++;
+        }
+        else if(myMap[sandPosition.x-1, sandPosition.y+1] == '.') {
+            sandPosition.y++;
+            sandPosition.x--;
+        }
+        else if(myMap[sandPosition.x+1, sandPosition.y+1] == '.') {
+            sandPosition.y++;
+            sandPosition.x++;
         }
         else {
-            sandPosition = startPosition;
+            myMap[sandPosition.x, sandPosition.y] = 'o';
+            numStoppedSand++;
+            if(sandPosition == startPosition) {
+                stopPour = true;
+            }
+            else {
+                sandPosition = startPosition;
+            }
+        }
+
+        if(sandPosition.y > ymax+1) {
+            stopPour = true;
         }
     }
+
+    return numStoppedSand;
 }
 
+makeMap(Int32.MaxValue);
+var numStoppedSand = pourSand();
+Console.WriteLine($"Part 1 - number of settled sand: {numStoppedSand}");
+
+makeMap(ymax + 2);
+numStoppedSand = pourSand();
 Console.WriteLine($"Part 2 - number of settled sand: {numStoppedSand}");
+
 
 public class Path {
     public List<(int, int)> points = new List<(int, int)>();
